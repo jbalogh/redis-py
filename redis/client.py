@@ -85,8 +85,7 @@ class Connection(object):
         except socket.error, e:
             if e.args[0] == errno.EPIPE:
                 self.disconnect()
-            raise ConnectionError("Error %s while writing to socket. %s." % \
-                e.args)
+            raise
 
     def read(self, length=None):
         """
@@ -97,11 +96,9 @@ class Connection(object):
             if length is not None:
                 return self._fp.read(length)
             return self._fp.readline()
-        except socket.error, e:
+        except socket.error:
             self.disconnect()
-            if e.args and e.args[0] == errno.EAGAIN:
-                raise ConnectionError("Error while reading from socket: %s" % \
-                    e.args[1])
+            raise
         return ''
 
 def list_or_args(command, keys, args):
